@@ -31,6 +31,14 @@ namespace RandomWallpaper
             var screen = Screen.AllScreens.MaxElement(s => s.Bounds.Width * s.Bounds.Height).Bounds;
             var cachedPath = Path.Combine(Path.GetDirectoryName(path), "RandomWallpaper-" + screen.Width + "x" + screen.Height, Path.GetFileName(path));
 
+            if (File.Exists(cachedPath))
+            {
+                var cached = new FileInfo(cachedPath);
+                var real = new FileInfo(path);
+                if (cached.LastWriteTimeUtc != real.LastWriteTimeUtc || cached.Length != real.Length)
+                    File.Delete(cachedPath);
+            }
+
             if (!File.Exists(cachedPath))
             {
                 var dirPath = Path.GetDirectoryName(cachedPath);
