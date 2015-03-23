@@ -49,7 +49,7 @@ namespace RandomWallpaper
         [DocumentationRhoML("{h}Skews the random selection towards older images.{}\n\nSame as the corresponding {command}config{} option, but has effect only once, and is not saved for the next time.\n{darkgray}If omitted, will use the configured value: $(CfgOldBias).{}")]
         public double? OldBias = null;
 
-        [Option("-p", "--paths")]
+        [Option("-p", "--path", "--paths")]
         [DocumentationRhoML("{h}One or more paths from which to select the images.{}\nSame as the corresponding {command}config{} option, but has effect only once, and is not saved for the next time.")]
         public string[] Paths = null;
 

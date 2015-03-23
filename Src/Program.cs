@@ -51,7 +51,7 @@ namespace RandomWallpaper
             try { Settings.Save(); }
             catch (Exception e)
             {
-                ConsoleUtil.WriteLine("Error: ".Color(ConsoleColor.Red) + "could not save settings. " + e.Message);
+                ConsoleUtil.WriteLine(colorize("{red}Error:{} could not save settings. " + e.Message));
                 return ErrorCrash;
             }
             return result;
@@ -149,7 +149,7 @@ namespace RandomWallpaper
                     foreach (var match in matches)
                         files.Add(match.FullName);
                     if (matches.Length == 0)
-                        ConsoleUtil.WriteLine("{yellow}Warning:{} no images matched by filter: {h}{0}{}".Fmt(path));
+                        ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no images matched by filter: {h}{0}{}".Fmt(path)));
                     continue;
                 }
 
@@ -164,13 +164,13 @@ namespace RandomWallpaper
                             any = true;
                         }
                     if (!any)
-                        ConsoleUtil.WriteLine("{yellow}Warning:{} no images found at this path: {h}{0}{}".Fmt(path));
+                        ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no images found at this path: {h}{0}{}".Fmt(path)));
                     continue;
                 }
                 else if (File.Exists(path))
                     files.Add(path);
                 else
-                    ConsoleUtil.WriteLine("{yellow}Warning:{} no such path: {h}{0}{}".Fmt(path));
+                    ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no such path: {h}{0}{}".Fmt(path)));
             }
             if (files.Count == 0)
                 throw new TellUserException(colorize("{red}Error:{} there are no images to choose from."), ErrorNoImages);
@@ -178,7 +178,7 @@ namespace RandomWallpaper
             // Select next image
             again: ;
             var infos = files.Select(f => Settings.Images.ContainsKey(f) ? Settings.Images[f] : new ImageInfo { FileName = f }).ToList();
-            var oldestDate = infos.Where(ii => ii.Removed != null).Min(ii => ii.Removed.Value);
+            var oldestDate = infos.Where(ii => ii.Removed != null).MinOrDefault(ii => ii.Removed.Value, DateTime.UtcNow);
             oldestDate = DateTime.UtcNow - TimeSpan.FromSeconds((DateTime.UtcNow - oldestDate).TotalSeconds * (1 + cmd.OldBias.Value)); // make new images (1+OldBias) times older than the oldest image actually shown
             infos = infos.OrderBy(ii => ii.Removed ?? oldestDate).ToList();
             int takeCount = (int) Math.Ceiling(infos.Count * (100 - cmd.SkipRecent.Value) / 100.0);
