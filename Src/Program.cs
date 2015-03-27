@@ -29,7 +29,7 @@ namespace RandomWallpaper
 
             SettingsUtil.LoadSettings(out Settings);
 
-            Args = CommandLineParser.ParseOrWriteUsageToConsole<CommandLine>(args);
+            Args = CommandLineParser.ParseOrWriteUsageToConsole<CommandLine>(args, helpProcessor: expandHelpTokens);
             if (Args == null)
                 return ErrorArgs;
 
@@ -68,6 +68,15 @@ namespace RandomWallpaper
 
         [DllImport("user32.dll", SetLastError = true)]
         static extern bool SetProcessDPIAware();
+
+        private static ConsoleColoredString expandHelpTokens(ConsoleColoredString str)
+        {
+            return str
+                .ReplaceText("$(Version)", "v{0:000}".Fmt(Assembly.GetExecutingAssembly().GetName().Version.Major))
+                .ReplaceText("$(CfgSkipRecent)", Settings.SkipRecent.ToString())
+                .ReplaceText("$(CfgOldBias)", Settings.OldBias.ToString("0.0###"))
+                .ReplaceText("$(CfgMinTime)", Settings.MinimumTime.ToString());
+        }
 
         private static void printInfo(string label, ConsoleColoredString value)
         {
