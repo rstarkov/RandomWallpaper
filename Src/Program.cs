@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using RT.Util;
 using RT.Util.CommandLine;
 using RT.Util.Consoles;
@@ -24,6 +25,7 @@ namespace RandomWallpaper
         {
             if (args.Length == 2 && args[0] == "--post-build-check")
                 return Ut.RunPostBuildChecks(args[1], Assembly.GetExecutingAssembly());
+            SetProcessDPIAware();
 
             SettingsUtil.LoadSettings(out Settings);
 
@@ -63,6 +65,9 @@ namespace RandomWallpaper
             public int ExitCode { get; private set; }
             public TellUserException(ConsoleColoredString message, int exitCode) { Message = message; ExitCode = exitCode; }
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool SetProcessDPIAware();
 
         private static void printInfo(string label, ConsoleColoredString value)
         {
