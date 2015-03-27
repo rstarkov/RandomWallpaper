@@ -108,11 +108,12 @@ namespace RandomWallpaper
 
         public static int ExecuteNext(CommandLine args, NextCmd cmd, ImageInfo cur = null)
         {
-            checkPaths();
-
             cmd.Paths = cmd.Paths ?? Settings.Paths.ToArray();
             cmd.SkipRecent = cmd.SkipRecent ?? Settings.SkipRecent;
             cmd.OldBias = cmd.OldBias ?? Settings.OldBias;
+
+            if (cmd.Paths != null && cmd.Paths.Length == 0)
+                throw new TellUserException(colorize("{red}Error:{} please specify at least one wallpaper path using {command}next{} {option}--paths{}, or configure one permanently using {command}config{} {option}--paths{}."), ErrorUser);
 
             if (cur == null)
                 cur = getCurrent();
