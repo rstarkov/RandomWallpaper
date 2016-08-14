@@ -21,6 +21,7 @@
     <Optimize>false</Optimize>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <OutputType>Exe</OutputType>
+    <Merge>False</Merge>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseConsole|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -28,6 +29,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <OutputType>Exe</OutputType>
+    <Merge>RandomWallpaper.exe</Merge>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugWindowless|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +37,7 @@
     <DebugType>full</DebugType>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <OutputType>WinExe</OutputType>
+    <Merge>False</Merge>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWindowless|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -42,6 +45,7 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
     <OutputType>WinExe</OutputType>
+    <Merge>RandomWallpaperW.exe</Merge>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RT.Util, Version=1.0.1532.0, Culture=neutral, processorArchitecture=MSIL">
@@ -70,11 +74,9 @@
   <PropertyGroup>
     <PostBuildEvent>"$(TargetPath)" --post-build-check "$(SolutionDir)."</PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
+    <Exec Condition="'$(Merge)' != 'False'"
+          WorkingDirectory="$(OutputPath)"
+          Command="&quot;..\..\packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /out:Merged\$(Merge) RandomWallpaper.exe RT.Util.dll" />
   </Target>
-  -->
 </Project>
