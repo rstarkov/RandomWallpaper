@@ -87,8 +87,8 @@ namespace RandomWallpaper
             var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Internet Explorer\Desktop\General", true);
             key.SetValue("WallpaperSource", path);
             key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
-            key.SetValue("WallpaperStyle", 0);
-            key.SetValue("TileWallpaper", 0);
+            key.SetValue("WallpaperStyle", "0");
+            key.SetValue("TileWallpaper", "0");
             SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, cachedPath, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
         }
 
