@@ -4,12 +4,11 @@ using RT.Util.Consoles;
 
 namespace RandomWallpaper
 {
+    [CommandLine]
     [DocumentationRhoML("{h}Desktop Wallpaper Changer{}\nVersion $(Version)\n\nRandomly selects and assigns a new desktop wallpaper from a folder of images, taking care not to select recently selected images too often, and offering options to show specific images more or less frequently than others. Does not stay resident and so only applies a change when invoked, whether manually or by the Task Scheduler.")]
-    class CommandLine
+    abstract class CommandLine
     {
-        [IsPositional, IsMandatory]
-        [DocumentationRhoML("One of the commands to control wallpapers")]
-        public CmdBase Command = null;
+        public abstract int Execute(CommandLine args);
 
 #if DEBUG
         private static void PostBuildCheck(IPostBuildReporter rep)
@@ -19,15 +18,9 @@ namespace RandomWallpaper
 #endif
     }
 
-    [CommandGroup]
-    abstract class CmdBase
-    {
-        public abstract int Execute(CommandLine args);
-    }
-
     [CommandName("next", "n")]
     [DocumentationRhoML("Picks a new image and assigns it as the desktop wallpaper.")]
-    class NextCmd : CmdBase, ICommandLineValidatable
+    class NextCmd : CommandLine, ICommandLineValidatable
     {
         [Option("--scheduled")]
         [DocumentationRhoML("{h}Specifies that this is a scheduled invocation.{}\nUse when invoking this command from the Task Scheduler. This switch enables {option}--min-time{} and {command}more{} to take effect by possibly exiting without doing anything.")]
@@ -70,7 +63,7 @@ namespace RandomWallpaper
 
     [CommandName("less", "l")]
     [DocumentationRhoML("{h}Makes the current image less likely to appear again, and switches to the next image using {command}next{}.{}\nWhenever an image is chosen as the next wallpaper, there is a probability P (initially 100) that the image will actually be used (instead of marking it as shown and skipped). This command reduces that probability by 20%.\n{darkgray}For images that were previously subject to {command}more{}, this command undoes one invocation of {command}more{} instead.{}")]
-    class LessCmd : CmdBase
+    class LessCmd : CommandLine
     {
         public override int Execute(CommandLine args)
         {
@@ -80,7 +73,7 @@ namespace RandomWallpaper
 
     [CommandName("more", "m")]
     [DocumentationRhoML("{h}Makes the current image more likely to appear again.{}\nWhenever the {command}next{} command runs, there is a probability P (initially 100) that the wallpaper will actually be changed (instead of keeping the current image). This command reduces that probability by 20% whenever the current image is active.\n{darkgray}For images that were previously subject to {command}less{}, this command undoes one invocation of {command}less{} instead.{}")]
-    class MoreCmd : CmdBase
+    class MoreCmd : CommandLine
     {
         public override int Execute(CommandLine args)
         {
@@ -90,7 +83,7 @@ namespace RandomWallpaper
 
     [CommandName("config", "c")]
     [DocumentationRhoML("Displays and optionally changes some of the settings affecting the wallpaper selection.")]
-    class ConfigCmd : CmdBase, ICommandLineValidatable
+    class ConfigCmd : CommandLine, ICommandLineValidatable
     {
         [Option("-sr", "--skip-recent")]
         [DocumentationRhoML("{h}How many of the most recently selected wallpapers to skip, as % of all images.{}\nAll the selected images are ordered by how long ago they've been last selected as the wallpaper, and {option}SkipRecent{}% of them are excluded from the selection, except if the image has never been selected.\n{darkgray}Current value: $(CfgSkipRecent).{}")]
@@ -127,7 +120,7 @@ namespace RandomWallpaper
 
     [CommandName("explore", "e")]
     [DocumentationRhoML("Opens an explorer window for every configured wallpaper folder.")]
-    class ExploreCmd : CmdBase
+    class ExploreCmd : CommandLine
     {
         public override int Execute(CommandLine args)
         {

@@ -36,7 +36,7 @@ namespace RandomWallpaper
             int result;
             try
             {
-                result = Args.Command.Execute(Args);
+                result = Args.Execute(Args);
             }
             catch (TellUserException e)
             {

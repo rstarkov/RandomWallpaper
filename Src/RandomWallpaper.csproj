@@ -44,6 +44,10 @@
     <OutputType>WinExe</OutputType>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RT.Util, Version=1.0.1532.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RT.Util.1.0.1532\lib\net40-client\RT.Util.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -60,10 +64,7 @@
     <Compile Include="Wallpaper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RT.Util\Src\RT.Util.csproj">
-      <Project>{8d0fe79c-ad8d-475c-9e6f-9cae85365b5d}</Project>
-      <Name>RT.Util</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

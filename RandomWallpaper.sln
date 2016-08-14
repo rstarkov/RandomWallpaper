@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomWallpaper", "Src\RandomWallpaper.csproj", "{7E5CAEDD-786C-4938-9B45-1B40209092CC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RT.Util", "..\RT.Util\Src\RT.Util.csproj", "{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +21,6 @@ Global
 		{7E5CAEDD-786C-4938-9B45-1B40209092CC}.ReleaseConsole|Any CPU.Build.0 = ReleaseConsole|Any CPU
 		{7E5CAEDD-786C-4938-9B45-1B40209092CC}.ReleaseWindowless|Any CPU.ActiveCfg = ReleaseWindowless|Any CPU
 		{7E5CAEDD-786C-4938-9B45-1B40209092CC}.ReleaseWindowless|Any CPU.Build.0 = ReleaseWindowless|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.DebugConsole|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.DebugConsole|Any CPU.Build.0 = Debug|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.DebugWindowless|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.DebugWindowless|Any CPU.Build.0 = Debug|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.ReleaseConsole|Any CPU.ActiveCfg = Release|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.ReleaseConsole|Any CPU.Build.0 = Release|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.ReleaseWindowless|Any CPU.ActiveCfg = Release|Any CPU
-		{8D0FE79C-AD8D-475C-9E6F-9CAE85365B5D}.ReleaseWindowless|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
