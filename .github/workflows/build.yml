@@ -19,6 +19,9 @@ jobs:
         run: |
           $out = git rev-list 28acbc1b.. --count
           echo "VER=$out" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+          [Environment]::CurrentDirectory = $PWD
+          $commitId = [Environment]::GetEnvironmentVariable("GITHUB_SHA").Substring(0,6)
+          [System.IO.File]::WriteAllText("Src\Program.cs", [System.IO.File]::ReadAllText("Src\Program.cs").Replace("(000000)","($commitId)"))
 
       - name: "Log environment info: v${{ env.VER }}"
         run: |

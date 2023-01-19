@@ -74,7 +74,7 @@ namespace RandomWallpaper
         private static ConsoleColoredString expandHelpTokens(ConsoleColoredString str)
         {
             return str
-                .ReplaceText("$(Version)", "v{0:000}".Fmt(Assembly.GetExecutingAssembly().GetName().Version.Major))
+                .ReplaceText("$(Version)", "v{0:000} (000000)".Fmt(Assembly.GetExecutingAssembly().GetName().Version.Major))
                 .ReplaceText("$(CfgSkipRecent)", Settings.SkipRecent.ToString())
                 .ReplaceText("$(CfgOldBias)", Settings.OldBias.ToString("0.0###"))
                 .ReplaceText("$(CfgMinTime)", Settings.MinimumTime.ToString());
