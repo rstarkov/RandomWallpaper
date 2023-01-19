@@ -1,8 +1,9 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
-using RT.Util;
 using RT.CommandLine;
 using RT.PostBuild;
+using RT.Serialization;
+using RT.Util;
 using RT.Util.Consoles;
 using RT.Util.ExtensionMethods;
 
@@ -24,7 +25,11 @@ namespace RandomWallpaper
                 return PostBuildChecker.RunPostBuildChecks(args[1], Assembly.GetExecutingAssembly());
             SetProcessDPIAware();
 
-            SettingsUtil.LoadSettings(out Settings);
+            var settingsFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "RandomWallpaper", "RandomWallpaper.Settings.xml");
+            if (File.Exists(settingsFile))
+                Settings = ClassifyXml.DeserializeFile<Settings>(settingsFile);
+            else
+                Settings = new();
 
             Args = CommandLineParser.ParseOrWriteUsageToConsole<CommandLine>(args, helpProcessor: expandHelpTokens);
             if (Args == null)
@@ -47,7 +52,7 @@ namespace RandomWallpaper
                 return ErrorCrash;
             }
 #endif
-            try { Settings.Save(); }
+            try { ClassifyXml.SerializeToFile(Settings, settingsFile); }
             catch (Exception e)
             {
                 ConsoleUtil.WriteLine(colorize("{red}Error:{} could not save settings. " + e.Message));

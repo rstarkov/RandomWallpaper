@@ -25,12 +25,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RT.CommandLine" Version="2.0.1723" />
-    <PackageReference Include="RT.Serialization.Binary" Version="2.0.1723" />
-    <PackageReference Include="RT.Serialization.Json" Version="2.0.1723" />
-    <PackageReference Include="RT.Serialization.Xml" Version="2.0.1723" />
-    <PackageReference Include="RT.Util" Version="2.0.1723" />
-    <PackageReference Include="RT.Util.Core" Version="2.0.1723" />
+    <PackageReference Include="RT.CommandLine" Version="2.0.1724" />
+    <PackageReference Include="RT.Serialization.Xml" Version="2.0.1724" />
+    <PackageReference Include="RT.Util.Core" Version="2.0.1724" />
   </ItemGroup>
   
   <Target Name="PostBuildCheck" AfterTargets="AfterBuild">

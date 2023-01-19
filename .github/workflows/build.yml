@@ -48,7 +48,7 @@ jobs:
           dotnet publish -c ReleaseWindowless --no-restore -p:Version=${{env.VER}}.0.0.0 -o Publish
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: RandomWallpaper-v${{env.VER}}
           path: Publish

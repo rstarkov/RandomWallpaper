@@ -1,10 +1,8 @@
 ﻿using RT.Serialization;
-using RT.Util;
 
 namespace RandomWallpaper
 {
-    [Settings("RandomWallpaper", SettingsKind.UserSpecific)]
-    class Settings : SettingsBase, IClassifyObjectProcessor
+    class Settings: IClassifyObjectProcessor
     {
         public List<string> Paths = new List<string>();
         public int SkipRecent = 40;
