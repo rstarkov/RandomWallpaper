@@ -1,0 +1,55 @@
+name: build
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Initialise environment for ${{ github.ref }}
+        shell: pwsh
+        run: |
+          $out = git rev-list 28acbc1b.. --count
+          echo "VER=$out" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+
+      - name: "Log environment info: v${{ env.VER }}"
+        run: |
+          echo VER: %VER%
+          echo dotnet --version:
+          dotnet --version
+
+      - name: Install dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.x'
+          dotnet-quality: 'ga'
+
+      - name: dotnet restore
+        run: dotnet restore
+
+      - name: dotnet build
+        run: dotnet build -c DebugConsole
+        # this builds with post-build checks which don't run in release builds
+
+      - name: dotnet publish Console
+        run: |
+          dotnet publish -c ReleaseConsole --no-restore -p:Version=${{env.VER}}.0.0.0 -o Publish
+
+      - name: dotnet publish Windowless
+        run: |
+          dotnet publish -c ReleaseWindowless --no-restore -p:Version=${{env.VER}}.0.0.0 -o Publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: RandomWallpaper-v${{env.VER}}
+          path: Publish
+          if-no-files-found: error
