@@ -1,5 +1,6 @@
-﻿using RT.Util;
-using RT.Util.CommandLine;
+﻿using RT.CommandLine;
+using RT.PostBuild;
+using RT.Util;
 using RT.Util.Consoles;
 
 namespace RandomWallpaper
@@ -10,7 +11,7 @@ namespace RandomWallpaper
     {
         public abstract int Execute(CommandLine args);
 
-#if DEBUG
+#if DEBUGCONSOLE || DEBUGWINDOWLESS
         private static void PostBuildCheck(IPostBuildReporter rep)
         {
             CommandLineParser.PostBuildStep<CommandLine>(rep, null);

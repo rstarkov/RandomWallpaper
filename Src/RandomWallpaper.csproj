@@ -1,82 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E5CAEDD-786C-4938-9B45-1B40209092CC}</ProjectGuid>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RandomWallpaper</RootNamespace>
-    <AssemblyName>RandomWallpaper</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <OutputPath>..\Builds\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>..\Builds\$(Configuration)\obj-$(AssemblyName)\</IntermediateOutputPath>
-    <BaseIntermediateOutputPath>..\Builds\$(Configuration)\obj-$(AssemblyName)\</BaseIntermediateOutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DebugConsole|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
     <OutputType>Exe</OutputType>
-    <Merge>False</Merge>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseConsole|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
-    <OutputType>Exe</OutputType>
-    <Merge>RandomWallpaper.exe</Merge>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugWindowless|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Configurations>DebugConsole;DebugWindowless;ReleaseConsole;ReleaseWindowless</Configurations>
+    <Platforms>AnyCPU</Platforms>
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'DebugWindowless' ">
     <OutputType>WinExe</OutputType>
-    <Merge>False</Merge>
+    <AssemblyName>RandomWallpaperW</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseWindowless|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE</DefineConstants>
+  
+  <PropertyGroup Condition=" '$(Configuration)' == 'ReleaseWindowless' ">
     <OutputType>WinExe</OutputType>
-    <Merge>RandomWallpaperW.exe</Merge>
+    <AssemblyName>RandomWallpaperW</AssemblyName>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="RT.Util, Version=1.0.1532.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RT.Util.1.0.1532\lib\net40-client\RT.Util.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="RT.CommandLine" Version="2.0.1723" />
+    <PackageReference Include="RT.Serialization.Binary" Version="2.0.1723" />
+    <PackageReference Include="RT.Serialization.Json" Version="2.0.1723" />
+    <PackageReference Include="RT.Serialization.Xml" Version="2.0.1723" />
+    <PackageReference Include="RT.Util" Version="2.0.1723" />
+    <PackageReference Include="RT.Util.Core" Version="2.0.1723" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CommandLine.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
-    <Compile Include="Wallpaper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>"$(TargetPath)" --post-build-check "$(SolutionDir)."</PostBuildEvent>
-  </PropertyGroup>
-  <Target Name="AfterBuild">
-    <Exec Condition="'$(Merge)' != 'False'"
-          WorkingDirectory="$(OutputPath)"
-          Command="&quot;..\..\packages\ILRepack.2.0.10\tools\ILRepack.exe&quot; /out:Merged\$(Merge) RandomWallpaper.exe RT.Util.dll" />
+  
+  <Target Name="PostBuildCheck" AfterTargets="AfterBuild">
+    <Exec WorkingDirectory="$(OutputPath)" Command="&quot;$(TargetDir)$(AssemblyName).exe&quot; --post-build-check &quot;$(SolutionDir).&quot;" />
   </Target>
+
 </Project>

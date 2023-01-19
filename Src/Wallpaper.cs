@@ -1,13 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+﻿using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using RT.Util.ExtensionMethods;
 
 namespace RandomWallpaper
 {

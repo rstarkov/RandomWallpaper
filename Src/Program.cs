@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using RT.Util;
-using RT.Util.CommandLine;
+using RT.CommandLine;
+using RT.PostBuild;
 using RT.Util.Consoles;
 using RT.Util.ExtensionMethods;
 
@@ -24,7 +21,7 @@ namespace RandomWallpaper
         static int Main(string[] args)
         {
             if (args.Length == 2 && args[0] == "--post-build-check")
-                return Ut.RunPostBuildChecks(args[1], Assembly.GetExecutingAssembly());
+                return PostBuildChecker.RunPostBuildChecks(args[1], Assembly.GetExecutingAssembly());
             SetProcessDPIAware();
 
             SettingsUtil.LoadSettings(out Settings);
@@ -196,7 +193,7 @@ namespace RandomWallpaper
             var oldestDate = infos.Where(ii => ii.Removed != null).MinOrDefault(ii => ii.Removed.Value, DateTime.UtcNow);
             oldestDate = DateTime.UtcNow - TimeSpan.FromSeconds((DateTime.UtcNow - oldestDate).TotalSeconds * (1 + cmd.OldBias.Value)); // make new images (1+OldBias) times older than the oldest image actually shown
             infos = infos.OrderBy(ii => ii.Removed ?? oldestDate).ToList();
-            int takeCount = (int) Math.Ceiling(infos.Count * (100 - cmd.SkipRecent.Value) / 100.0);
+            int takeCount = (int)Math.Ceiling(infos.Count * (100 - cmd.SkipRecent.Value) / 100.0);
             infos = infos.Take(takeCount).Concat(infos.Skip(takeCount).Where(ii => ii.Removed == null)).ToList();
             double totalProbability = 0;
             foreach (var info in infos)
@@ -262,7 +259,7 @@ namespace RandomWallpaper
 
         private static double scaleMoreLess(double moreless, double scale)
         {
-            moreless = 1 - (1 - moreless) * scale;  // 0, 0.20, 0.36, 0.49, 0.59 etc
+            moreless = 1 - (1 - moreless) * scale; // 0, 0.20, 0.36, 0.49, 0.59 etc
             return moreless < 0.1 ? 0 : moreless;
         }
 
