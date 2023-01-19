@@ -13,11 +13,11 @@ class Program
 {
     static Settings Settings;
     static CommandLine Args;
-    const int Success = 0;
-    const int ErrorArgs = 1;
-    const int ErrorUser = 2;
-    const int ErrorNoImages = 3;
-    const int ErrorCrash = 9;
+    public const int Success = 0;
+    public const int ErrorArgs = 1;
+    public const int ErrorUser = 2;
+    public const int ErrorNoImages = 3;
+    public const int ErrorCrash = 9;
 
     static int Main(string[] args)
     {
@@ -45,32 +45,20 @@ class Program
             ConsoleUtil.WriteLine(e.Message);
             result = e.ExitCode;
         }
-#if !DEBUG
-        catch (Exception e)
-        {
-            ConsoleUtil.WriteLine("Error: ".Color(ConsoleColor.Red) + e.Message);
-            return ErrorCrash;
-        }
+#if !DEBUGCONSOLE && !DEBUGWINDOWLESS
+            catch (Exception e)
+            {
+                ConsoleUtil.WriteLine("Error: ".Color(ConsoleColor.Red) + e.Message);
+                return ErrorCrash;
+            }
 #endif
         try { ClassifyXml.SerializeToFile(Settings, settingsFile); }
         catch (Exception e)
         {
-            ConsoleUtil.WriteLine(colorize("{red}Error:{} could not save settings. " + e.Message));
+            ConsoleUtil.WriteLine(Colorize("{red}Error:{} could not save settings. " + e.Message));
             return ErrorCrash;
         }
         return result;
-    }
-
-    class TellUserException : Exception
-    {
-        public new ConsoleColoredString Message { get; private set; }
-        public int ExitCode { get; private set; }
-
-        public TellUserException(ConsoleColoredString message, int exitCode)
-        {
-            Message = message;
-            ExitCode = exitCode;
-        }
     }
 
     [DllImport("user32.dll", SetLastError = true)]
@@ -90,7 +78,7 @@ class Program
         ConsoleUtil.WriteLine(label.Color(ConsoleColor.White) + value);
     }
 
-    private static ConsoleColoredString colorize(string rhoML)
+    public static ConsoleColoredString Colorize(string rhoML)
     {
         return CommandLineParser.Colorize(RhoML.Parse(rhoML));
     }
@@ -119,7 +107,7 @@ class Program
     private static void checkPaths()
     {
         if (Settings.Paths.Count == 0)
-            throw new TellUserException(colorize("{red}Error:{} please configure at least one path containing wallpapers using {command}config{} {option}--paths{}."), ErrorUser);
+            throw new TellUserException(Colorize("{red}Error:{} please configure at least one path containing wallpapers using {command}config{} {option}--paths{}."), ErrorUser);
     }
 
     public static int ExecuteNext(CommandLine args, NextCmd cmd, ImageInfo cur = null)
@@ -129,7 +117,7 @@ class Program
         cmd.OldBias = cmd.OldBias ?? Settings.OldBias;
 
         if (cmd.Paths != null && cmd.Paths.Length == 0)
-            throw new TellUserException(colorize("{red}Error:{} please specify at least one wallpaper path using {command}next{} {option}--paths{}, or configure one permanently using {command}config{} {option}--paths{}."), ErrorUser);
+            throw new TellUserException(Colorize("{red}Error:{} please specify at least one wallpaper path using {command}next{} {option}--paths{}, or configure one permanently using {command}config{} {option}--paths{}."), ErrorUser);
 
         if (cur == null)
             cur = getCurrent();
@@ -138,13 +126,13 @@ class Program
             // Skip execution if it's not been there long enough (if requested)
             if (cmd.Scheduled && cur.Applied != null && (DateTime.UtcNow - cur.Applied.Value < TimeSpan.FromMinutes(Settings.MinimumTime)))
             {
-                ConsoleUtil.WriteLine(colorize("Leaving current image unchanged because it has been visible for less than {0} minutes (use {command}config{} {option}--min-time{} to configure).".Fmt(Settings.MinimumTime)));
+                ConsoleUtil.WriteLine(Colorize("Leaving current image unchanged because it has been visible for less than {0} minutes (use {command}config{} {option}--min-time{} to configure).".Fmt(Settings.MinimumTime)));
                 return Success;
             }
             // Occasionally skip execution if the image is set to More
             if (cmd.Scheduled && !cmd.Uniform && Rnd.NextDouble() < cur.MoreOrLess)
             {
-                ConsoleUtil.WriteLine(colorize("Leaving current image unchanged because you've requested to see it more (use {command}more{}/{command}less{} to configure)."));
+                ConsoleUtil.WriteLine(Colorize("Leaving current image unchanged because you've requested to see it more (use {command}more{}/{command}less{} to configure)."));
                 return Success;
             }
             // Save the removed timestamp
@@ -169,13 +157,13 @@ class Program
                 catch
                 {
                     // The path is not in the form of a directory name + file mask. Error out.
-                    throw new TellUserException(colorize("{red}Error:{} this path is either invalid or unsupported: {h}{0}{}".Fmt(path)), ErrorUser);
+                    throw new TellUserException(Colorize("{red}Error:{} this path is either invalid or unsupported: {h}{0}{}".Fmt(path)), ErrorUser);
                 }
                 // The path is valid as a mask. Process it as such.
                 foreach (var match in matches)
                     files.Add(match.FullName);
                 if (matches.Length == 0)
-                    ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no images matched by filter: {h}{0}{}".Fmt(path)));
+                    ConsoleUtil.WriteLine(Colorize("{yellow}Warning:{} no images matched by filter: {h}{0}{}".Fmt(path)));
                 continue;
             }
 
@@ -190,16 +178,16 @@ class Program
                         any = true;
                     }
                 if (!any)
-                    ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no images found at this path: {h}{0}{}".Fmt(path)));
+                    ConsoleUtil.WriteLine(Colorize("{yellow}Warning:{} no images found at this path: {h}{0}{}".Fmt(path)));
                 continue;
             }
             else if (File.Exists(path))
                 files.Add(path);
             else
-                ConsoleUtil.WriteLine(colorize("{yellow}Warning:{} no such path: {h}{0}{}".Fmt(path)));
+                ConsoleUtil.WriteLine(Colorize("{yellow}Warning:{} no such path: {h}{0}{}".Fmt(path)));
         }
         if (files.Count == 0)
-            throw new TellUserException(colorize("{red}Error:{} there are no images to choose from."), ErrorNoImages);
+            throw new TellUserException(Colorize("{red}Error:{} there are no images to choose from."), ErrorNoImages);
 
         // Select next image
         again: ;
@@ -231,15 +219,18 @@ class Program
         {
             // If we just skip it then the old-bias will still cause it to be selected a lot, so it would have to be less'd massively to really reduce the frequency.
             // So instead record it as if it's been displayed.
-            Console.WriteLine(colorize("Skipping {h}{0}{} because it was configured to be shown less frequently.".Fmt(selected.FileName)));
+            Console.WriteLine(Colorize("Skipping {h}{0}{} because it was configured to be shown less frequently.".Fmt(selected.FileName)));
             selected.Applied = selected.Removed = DateTime.UtcNow;
             goto again;
         }
 
         // Apply it
         selected.Applied = DateTime.UtcNow;
-        Wallpaper.Set(selected.FileName);
-        Console.WriteLine(colorize("Applied next wallpaper: {h}{0}{}.".Fmt(selected.FileName)));
+        if (Settings.SetLockscreen)
+            Wallpaper.SetLockscreen(selected.FileName);
+        if (Settings.SetWallpaper)
+            Wallpaper.SetWallpaper(selected.FileName);
+        Console.WriteLine(Colorize("Applied next wallpaper: {h}{0}{}.".Fmt(selected.FileName)));
         return Success;
     }
 
@@ -292,13 +283,25 @@ class Program
                 if (Directory.Exists(path))
                 {
                     CommandRunner.Run("explorer", path).OutputNothing().FailExitCodes().Go();
-                    ConsoleUtil.WriteLine(colorize("Opened folder {h}{0}{}.".Fmt(path)));
+                    ConsoleUtil.WriteLine(Colorize("Opened folder {h}{0}{}.".Fmt(path)));
                     continue;
                 }
             }
             catch { }
-            ConsoleUtil.WriteLine(colorize("Skipped folder {h}{0}{}: does not exist or not a directory path.".Fmt(path)));
+            ConsoleUtil.WriteLine(Colorize("Skipped folder {h}{0}{}: does not exist or not a directory path.".Fmt(path)));
         }
         return Success;
+    }
+}
+
+class TellUserException : Exception
+{
+    public new ConsoleColoredString Message { get; private set; }
+    public int ExitCode { get; private set; }
+
+    public TellUserException(ConsoleColoredString message, int exitCode)
+    {
+        Message = message;
+        ExitCode = exitCode;
     }
 }

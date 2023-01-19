@@ -8,6 +8,8 @@ class Settings : IClassifyObjectProcessor
     public int SkipRecent = 40;
     public double OldBias = 1.5;
     public int MinimumTime = 10;
+    public bool SetWallpaper = true;
+    public bool SetLockscreen = true;
 
     public Dictionary<string, ImageInfo> Images = new Dictionary<string, ImageInfo>(StringComparer.OrdinalIgnoreCase);
 
